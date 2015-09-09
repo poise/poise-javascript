@@ -27,7 +27,26 @@ module PoiseJavascript
 
     # Mixin for resources which run Javascript commands.
     module Resource
-      include PoiseLanguages::Command::Mixin::Resource(:javascript)
+      include PoiseLanguages::Command::Mixin::Resource(:javascript, default_binary: 'node')
+
+      # @!attribute npm_binary
+      #   Path to the npm binary.
+      #   @return [String]
+      attribute(:npm_binary, kind_of: String, default: lazy { default_npm_binary })
+
+      private
+
+      # Find the default gem binary. If there is a parent use that, otherwise
+      # use the same logic as {PoiseRuby::RubyProviders::Base#npm_binary}.
+      #
+      # @return [String]
+      def default_npm_binary
+        if parent_javascript
+          parent_javascript.npm_binary
+        else
+          ::File.expand_path('../npm', javascript)
+        end
+      end
     end
 
     module Provider

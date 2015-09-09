@@ -66,6 +66,14 @@ module PoiseJavascript
         {}
       end
 
+      # The path to the `npm` binary. This is an output property.
+      #
+      # @abstract
+      # @return [String]
+      def npm_binary
+        ::File.expand_path(::File.join('..', 'npm'), javascript_binary)
+      end
+
       private
 
       # Install the Javascript runtime. Must be implemented by subclass.

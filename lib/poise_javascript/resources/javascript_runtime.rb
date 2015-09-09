@@ -66,6 +66,17 @@ module PoiseJavascript
         def javascript_environment
           provider_for_action(:javascript_environment).javascript_environment
         end
+
+        # The path to the `npm` binary for this Javascript installation. This is
+        # an output property. Can raise an exception if NPM is not supported for
+        # this runtime.
+        #
+        # @return [String]
+        # @example
+        #   execute "#{resources('javascript_runtime[nodejs]').npm_binary} install"
+        def npm_binary
+          provider_for_action(:npm_binary).npm_binary
+        end
       end
 
       # Providers can be found under lib/poise_javascript/javascript_providers/
