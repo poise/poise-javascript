@@ -53,10 +53,12 @@ module PoiseJavascript
 
       def install_javascript
         install_system_packages
+        package 'npm' if node.platform_family?('debian')
       end
 
       def uninstall_javascript
         uninstall_system_packages
+        package('npm') { action :purge } if node.platform_family?('debian')
       end
 
       def system_package_candidates(version)
