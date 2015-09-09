@@ -40,6 +40,15 @@ RSpec.shared_examples 'a javascript_runtime_test' do |javascript_name, version=n
       its(:content) { is_expected.to start_with version } if version
     end
   end
+
+  describe 'npm_install' do
+    assert_file('require_express') do
+      its(:content) { is_expected.to eq '4.13.3' }
+    end
+    assert_file('require_handlebars', false)
+    assert_file('sentinel_npm_install_one')
+    assert_file('sentinel_npm_install_two', false)
+  end
 end
 
 describe 'default' do

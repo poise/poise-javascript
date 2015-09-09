@@ -199,6 +199,28 @@ For other properties see the [Chef documentation](https://docs.chef.io/resource_
 The `response_file`, `response_file_variables`, and `source` properties are not
 supported.
 
+### `npm_install`
+
+The `npm_install` resource runs `npm install` for a package.
+
+```ruby
+npm_install '/opt/myapp'
+```
+
+The underlying `npm install` command will run on every converge, but notifications
+will only be triggered if a package is actually installed.
+
+#### Actions
+
+* `:install` – Run `npm install`. *(default)*
+
+#### Properties
+
+* `path` – Path to the package folder containing a `package.json`. *(name attribute)*
+* `group` – System group to install the packages.
+* `production` – Enable production install mode. *(default: true)*
+* `user` – System user to install the packages.
+
 ## Javascript Providers
 
 ### Common Options

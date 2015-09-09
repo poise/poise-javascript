@@ -66,6 +66,41 @@ module PoiseJavascript
               version new_resource.version
             end
             test_version
+
+            # Create a package and test npm install.
+            pkg_path = ::File.join(new_resource.path, 'pkg')
+            directory pkg_path
+            file ::File.join(pkg_path, 'package.json') do
+              content <<-EOH
+{
+  "name": "mypkg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\"Error: no test specified\\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.13.3"
+  },
+  "devDependencies": {
+    "handlebars": "4.0.2"
+  }
+}
+EOH
+            end
+            npm_install pkg_path do
+              notifies :create, sentinel_file('npm_install_one'), :immediately
+            end
+            npm_install pkg_path+'2' do
+              path pkg_path
+              notifies :create, sentinel_file('npm_install_two'), :immediately
+            end
+            test_require('express', pkg_path)
+            test_require('handlebars', pkg_path)
+
           end
         end
 
@@ -85,7 +120,7 @@ module PoiseJavascript
             mode '644'
             content <<-EOH
 var fs = require('fs');
-fs.writeFileSync(process.argv[2], process.version)
+fs.writeFileSync(process.argv[2], process.version);
 EOH
           end
 
@@ -94,27 +129,26 @@ EOH
           end
         end
 
-#         def test_import(name, path=name, python: new_resource.name, virtualenv: nil)
-#           # Only queue up this resource once, the ivar is just for tracking.
-#           @python_import_test ||= file ::File.join(new_resource.path, 'import_version.py') do
-#             user 'root'
-#             group 'root'
-#             mode '644'
-#             content <<-EOH
-# try:
-#     import sys
-#     mod = __import__(sys.argv[1])
-#     open(sys.argv[2], 'w').write(mod.__version__)
-# except ImportError:
-#     pass
-# EOH
-#           end
+        def test_require(name, cwd, path=name, javascript: new_resource.name)
+          javascript_require_test = file ::File.join(cwd, 'javascript_require.js') do
+            user 'root'
+            group 'root'
+            mode '644'
+            content <<-EOH
+var fs = require('fs');
+try {
+  var version = require(process.argv[2] + '/package.json').version;
+  fs.writeFileSync(process.argv[3], version);
+} catch(e) {
+}
+EOH
+          end
 
-#           python_execute "#{@python_import_test.path} #{name} #{::File.join(new_resource.path, "import_#{path}")}" do
-#             python python if python
-#             virtualenv virtualenv if virtualenv
-#           end
-#         end
+          javascript_execute "#{javascript_require_test.path} #{name} #{::File.join(new_resource.path, "require_#{path}")}" do
+            javascript javascript if javascript
+            cwd cwd
+          end
+        end
 
       end
     end
