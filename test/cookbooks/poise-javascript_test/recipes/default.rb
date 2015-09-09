@@ -42,7 +42,8 @@ else
   file '/no_scl'
 end
 
-if !platform_family?('rhel')
+# npm in 12.04 seems to be busted.
+if !platform_family?('rhel') && !(platform?('ubuntu') && node['platform_version'] == '12.04')
   javascript_runtime_test 'system' do
     version ''
     runtime_provider :system
