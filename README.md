@@ -189,6 +189,8 @@ The `:purge` and `:reconfigure` actions are not supported.
 
 * `group` – System group to install the package.
 * `package_name` – Package or packages to install. *(name property)*
+* `path` – Path to install the package in to. If unset install using `--global`.
+  *(default: nil)*
 * `version` – Version or versions to install.
 * `javascript` – Name of the `javascript_runtime` resource to use. If not specified, the
   most recently declared `javascript_runtime` will be used. Can also be set to the
