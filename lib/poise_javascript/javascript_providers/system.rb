@@ -63,7 +63,7 @@ module PoiseJavascript
 
       def system_package_candidates(version)
         # Boring :-(.
-        %w{nodejs}
+        %w{nodejs node}
       end
 
     end
