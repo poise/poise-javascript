@@ -165,7 +165,7 @@ For other properties see the [Chef documentation](https://docs.chef.io/resource_
 
 **COMING SOON*
 
-The `node_package` resource installs Node.ks packages using
+The `node_package` resource installs Node.js packages using
 [NPM](https://www.npmjs.com/).
 
 ```ruby
