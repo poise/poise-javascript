@@ -67,4 +67,23 @@ describe PoiseJavascript::JavascriptProviders::Base do
 
     it { is_expected.to eq({}) }
   end # /describe #javascript_environment
+
+  describe '#npm_binary' do
+    provider(:poise_test2, parent: described_class) do
+      provides(:poise_test2)
+
+      def javascript_binary
+        '/usr/bin/node'
+      end
+    end
+    recipe(subject: false) do
+      javascript_runtime 'test' do
+        action :nothing
+        provider :poise_test2
+      end
+    end
+    subject { chef_run.javascript_runtime('test').npm_binary }
+
+    it { is_expected.to eq '/usr/bin/npm' }
+  end # /describe #npm_binary
 end
