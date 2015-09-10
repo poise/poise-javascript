@@ -16,6 +16,7 @@
 
 require 'poise_javascript/resources/javascript_execute'
 require 'poise_javascript/resources/javascript_runtime'
+require 'poise_javascript/resources/node_package'
 require 'poise_javascript/resources/npm_install'
 
 
