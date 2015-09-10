@@ -43,12 +43,12 @@ describe PoiseJavascript::JavascriptProviders::System do
 
   context 'on Ubuntu' do
     let(:chefspec_options) { {platform: 'ubuntu', version: '14.04'} }
-    it_behaves_like 'system provider', %w{nodejs node}, 'nodejs', 'nodejs'
+    it_behaves_like 'system provider', %w{nodejs nodejs-legacy node}, 'nodejs', 'nodejs'
   end # /context on Ubuntu
 
   context 'on Gentoo' do
     let(:chefspec_options) { {platform: 'gentoo', version: '2.1' } }
-    it_behaves_like 'system provider', %w{nodejs node}, 'nodejs', 'node'
+    it_behaves_like 'system provider', %w{nodejs nodejs-legacy node}, 'nodejs', 'node'
   end # /context on Gentoo
 
   context 'on CentOS' do
