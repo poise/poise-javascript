@@ -49,6 +49,10 @@ module PoiseJavascript
         #   Enable production install mode.
         #   @return [Boolean]
         attribute(:production, equal_to: [true, false], default: true)
+        # @!attribute unsafe_perm
+        #   Enable --unsafe-perm.
+        #   @return [Boolean, nil]
+        attribute(:unsafe_perm, equal_to: [true, false, nil], default: true)
         # @!attribute user
         #   System user to install the packages.
         #   @return [String, Integer, nil]
@@ -70,6 +74,11 @@ module PoiseJavascript
         def action_install
           cmd = [new_resource.npm_binary, 'install']
           cmd << '--production' if new_resource.production
+          # Set --unsafe-perm unless the property is nil.
+          unless new_resource.unsafe_perm.nil?
+            cmd << '--unsafe-perm'
+            cmd << new_resource.unsafe_perm.to_s
+          end
           output = javascript_shell_out!(cmd, cwd: new_resource.path, user: new_resource.user, group: new_resource.group).stdout
           unless output.strip.empty?
             # Any output means it did something.
