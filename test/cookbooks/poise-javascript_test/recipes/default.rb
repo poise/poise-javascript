@@ -39,6 +39,7 @@ if platform_family?('rhel')
   javascript_runtime_test 'scl' do
     version ''
     runtime_provider :scl
+    test_yo false
   end
 else
   file '/no_scl'
