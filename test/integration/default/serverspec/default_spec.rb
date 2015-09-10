@@ -42,26 +42,61 @@ RSpec.shared_examples 'a javascript_runtime_test' do |javascript_name, version=n
   end
 
   describe 'npm_install' do
+    assert_file('sentinel_npm_install_one')
+    assert_file('sentinel_npm_install_two', false)
     assert_file('require_express') do
       its(:content) { is_expected.to eq '4.13.3' }
     end
     assert_file('require_handlebars', false)
-    assert_file('sentinel_npm_install_one')
-    assert_file('sentinel_npm_install_two', false)
+  end
+
+  describe 'node_package' do
+    assert_file('sentinel_test1_express_one')
+    assert_file('sentinel_test1_express_two', false)
+    assert_file('sentinel_test1_multi')
+    assert_file('sentinel_test1_multi_overlap')
+    assert_file('sentinel_test1_bower', false)
+    assert_file('require_node_package_express') do
+      its(:content) { is_expected.to_not eq '' }
+    end
+    assert_file('require_gulp') do
+      its(:content) { is_expected.to_not eq '' }
+    end
+    assert_file('require_less') do
+      its(:content) { is_expected.to_not eq '' }
+    end
+    assert_file('require_bower') do
+      its(:content) { is_expected.to_not eq '' }
+    end
+    assert_file('require_yo') do
+      its(:content) { is_expected.to eq '1.4.5' }
+    end unless File.exist?(File.join('', 'root', "javascript_test_#{javascript_name}", 'no_yo'))
+    assert_file('require_forever') do
+      its(:content) { is_expected.to eq '0.13.0' }
+    end
+
+    assert_file('sentinel_test2_express')
+
+    assert_file('sentinel_grunt_one')
+    assert_file('sentinel_grunt_two', false)
+    assert_file('require_grunt-cli', false)
+    assert_file('grunt_version') do
+      its(:content) { is_expected.to start_with 'grunt-cli v' }
+    end
   end
 end
 
-describe 'default' do
-  it_should_behave_like 'a javascript_runtime_test', 'default', 'v0.12'
-end
+# describe 'default' do
+#   it_should_behave_like 'a javascript_runtime_test', 'default', 'v0.12'
+# end
 
-describe 'nodejs 0.12' do
-  it_should_behave_like 'a javascript_runtime_test', '0.12', 'v0.12'
-end
+# describe 'nodejs 0.12' do
+#   it_should_behave_like 'a javascript_runtime_test', '0.12', 'v0.12'
+# end
 
-describe 'iojs 3' do
-  it_should_behave_like 'a javascript_runtime_test', '3', 'v3'
-end
+# describe 'iojs 3' do
+#   it_should_behave_like 'a javascript_runtime_test', '3', 'v3'
+# end
 
 describe 'nodejs' do
   it_should_behave_like 'a javascript_runtime_test', 'nodejs'

@@ -38,6 +38,7 @@ module PoiseJavascript
         attribute(:version, kind_of: String, name_attribute: true)
         attribute(:runtime_provider, kind_of: Symbol)
         attribute(:path, kind_of: String, default: lazy { default_path })
+        attribute(:test_yo, equal_to: [true, false], default: true)
 
         def default_path
           ::File.join('', 'root', "javascript_test_#{name}")
@@ -67,7 +68,7 @@ module PoiseJavascript
             end
             test_version
 
-            # Create a package and test npm install.
+            # Create a package and test npm_install.
             pkg_path = ::File.join(new_resource.path, 'pkg')
             directory pkg_path
             file ::File.join(pkg_path, 'package.json') do
@@ -100,6 +101,75 @@ EOH
             end
             test_require('express', pkg_path)
             test_require('handlebars', pkg_path)
+
+            # Test node_package.
+            test1_path = ::File.join(new_resource.path, 'test1')
+            directory test1_path
+            node_package 'express' do
+              path test1_path
+              notifies :create, sentinel_file('test1_express_one'), :immediately
+            end
+            node_package 'express two' do
+              package_name 'express'
+              path test1_path
+              notifies :create, sentinel_file('test1_express_two'), :immediately
+            end
+            node_package %w{gulp less} do
+              path test1_path
+              notifies :create, sentinel_file('test1_multi'), :immediately
+            end
+            node_package %w{express bower} do
+              path test1_path
+              notifies :create, sentinel_file('test1_multi_overlap'), :immediately
+            end
+            node_package 'bower' do
+              path test1_path
+              notifies :create, sentinel_file('test1_bower'), :immediately
+            end
+            node_package 'yo' do
+              path test1_path
+              version '1.4.5'
+            end if new_resource.test_yo
+            node_package 'forever' do
+              path test1_path
+              version '0.13.0'
+            end
+            test_require('express', test1_path, 'node_package_express')
+            test_require('gulp', test1_path)
+            test_require('less', test1_path)
+            test_require('bower', test1_path)
+            if new_resource.test_yo
+              test_require('yo', test1_path)
+            else
+              file ::File.join(new_resource.path, 'no_yo')
+            end
+            test_require('forever', test1_path)
+
+            # Check we don't get cross talk between paths.
+            test2_path = ::File.join(new_resource.path, 'test2')
+            directory test2_path
+            node_package 'express' do
+              path test2_path
+              notifies :create, sentinel_file('test2_express'), :immediately
+            end
+
+            # Test global installs.
+            node_package 'grunt-cli' do
+              notifies :create, sentinel_file('grunt_one'), :immediately
+            end
+            node_package 'grunt-cli two' do
+              package_name 'grunt-cli'
+              notifies :create, sentinel_file('grunt_two'), :immediately
+            end
+            test_require('grunt-cli', new_resource.path)
+            javascript_execute 'grunt-cli --version' do
+              command lazy {
+                # Check local/bin first and then just bin/.
+                grunt_path = ::File.expand_path('../../local/bin/grunt', javascript)
+                grunt_path = ::File.expand_path('../grunt', javascript) unless ::File.exist?(grunt_path)
+                "#{grunt_path} --version > #{::File.join(new_resource.path, 'grunt_version')}"
+              }
+            end
 
           end
         end

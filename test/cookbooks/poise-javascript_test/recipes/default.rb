@@ -19,17 +19,19 @@ require 'poise_javascript/resources/javascript_runtime_test'
 # Install lsb-release because Debian 6 doesn't by default and serverspec requires it
 package 'lsb-release' if platform?('debian') && node['platform_version'].start_with?('6')
 
-javascript_runtime_test 'default' do
-  version ''
-end
+# javascript_runtime_test 'default' do
+#   version ''
+# end
 
-javascript_runtime_test '0.12'
+# javascript_runtime_test '0.12'
 
-javascript_runtime_test '3'
+# javascript_runtime_test '3'
 
 javascript_runtime_test 'nodejs'
 
-javascript_runtime_test 'nodejs-0.10'
+javascript_runtime_test 'nodejs-0.10' do
+  test_yo false
+end
 
 javascript_runtime_test 'iojs'
 
@@ -47,6 +49,7 @@ if !platform_family?('rhel') && !(platform?('ubuntu') && node['platform_version'
   javascript_runtime_test 'system' do
     version ''
     runtime_provider :system
+    test_yo false
   end
 else
   file '/no_system'
