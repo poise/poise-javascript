@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/license-Apache_2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 A [Chef](https://www.chef.io/) cookbook to provide a unified interface for
-installing server-side JavaScript runtimes.
+installing server-side JavaScript runtimes like Node.js and io.js.
 
 ## Quick Start
 
@@ -163,8 +163,6 @@ For other properties see the [Chef documentation](https://docs.chef.io/resource_
 
 ### `node_package`
 
-**COMING SOON*
-
 The `node_package` resource installs Node.js packages using
 [NPM](https://www.npmjs.com/).
 
@@ -195,6 +193,7 @@ The `:purge` and `:reconfigure` actions are not supported.
 * `javascript` – Name of the `javascript_runtime` resource to use. If not specified, the
   most recently declared `javascript_runtime` will be used. Can also be set to the
   full path to a `node` binary.
+* `unsafe_perm` – Enable `--unsafe-perm`. *(default: true)*
 * `user` – System user to install the package.
 
 For other properties see the [Chef documentation](https://docs.chef.io/resource_package.html#attributes).
@@ -220,7 +219,11 @@ will only be triggered if a package is actually installed.
 
 * `path` – Path to the package folder containing a `package.json`. *(name attribute)*
 * `group` – System group to install the packages.
+* `javascript` – Name of the `javascript_runtime` resource to use. If not specified, the
+  most recently declared `javascript_runtime` will be used. Can also be set to the
+  full path to a `node` binary.
 * `production` – Enable production install mode. *(default: true)*
+* `unsafe_perm` – Enable `--unsafe-perm`. *(default: true)*
 * `user` – System user to install the packages.
 
 ## Javascript Providers
