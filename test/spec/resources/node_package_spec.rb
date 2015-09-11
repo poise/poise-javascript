@@ -94,8 +94,141 @@ describe PoiseJavascript::Resources::NodePackage do
   end # /describe PoiseJavascript::Resources::NodePackage::Resource
 
   describe PoiseJavascript::Resources::NodePackage::Provider do
-    let(:new_resource) { double('new_resource', npm_binary: '/npm') }
+    let(:new_resource) { double('new_resource', path: nil, javascript: '/node', npm_binary: '/npm', user: nil, group: nil) }
     let(:test_provider) { described_class.new(new_resource, nil) }
+
+    describe '#load_current_resource' do
+      let(:new_resource) do
+        PoiseJavascript::Resources::NodePackage::Resource.new('mypkg', nil)
+      end
+      subject { test_provider.load_current_resource }
+
+      it do
+        expect(test_provider).to receive(:check_package_versions)
+        is_expected.to be_a PoiseJavascript::Resources::NodePackage::Resource
+      end
+    end # /describe #load_current_resource
+
+    describe '#check_package_versions' do
+      let(:package_name) { }
+      let(:current_resource) { PoiseJavascript::Resources::NodePackage::Resource.new(package_name, nil) }
+      let(:npm_version) { '2.12.1' }
+      let(:npm_list_out) { <<-EOH }
+{
+  "dependencies": {
+    "bower": {
+      "version": "1.3.12",
+      "from": "bower@*",
+      "resolved": "https://registry.npmjs.org/bower/-/bower-1.3.12.tgz"
+    },
+    "coffeelint": {
+      "version": "1.9.3",
+      "from": "coffeelint@*",
+      "resolved": "https://registry.npmjs.org/coffeelint/-/coffeelint-1.9.3.tgz"
+    },
+    "ember-cli": {
+      "version": "0.2.7",
+      "from": "ember-cli@*",
+      "resolved": "https://registry.npmjs.org/ember-cli/-/ember-cli-0.2.7.tgz"
+    },
+    "gulp": {
+      "version": "3.8.11",
+      "from": "gulp@*",
+      "resolved": "https://registry.npmjs.org/gulp/-/gulp-3.8.11.tgz"
+    },
+    "npm": {
+      "version": "2.12.1",
+      "from": "../../../../../../../private/tmp/node20150704-67289-jytzoh/node-v0.12.6/npm_install",
+      "resolved": "file:../../../../../../../private/tmp/node20150704-67289-jytzoh/node-v0.12.6/npm_install"
+    },
+    "phantomjs": {
+      "version": "1.9.16",
+      "from": "phantomjs@*",
+      "resolved": "https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.16.tgz"
+    }
+  }
+}
+EOH
+      subject do
+        test_provider.check_package_versions(current_resource)
+        {version: current_resource.version, candidate_version: test_provider.candidate_version}
+      end
+      before do
+        allow(test_provider).to receive(:npm_version).and_return(Gem::Version.new(npm_version))
+      end
+
+      def stub_javascript_shell_out(cmd, ret, **options)
+        default_options = {cwd: nil, user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}
+        allow(test_provider).to receive(:javascript_shell_out!).with(cmd, default_options.merge(options)).and_return(double(stdout: ret))
+      end
+
+      context 'with a single package' do
+        let(:package_name) { 'express' }
+
+        before do
+          stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
+          stub_javascript_shell_out(%w{/npm show --json --global express}, '{"version": "1.2.3"}')
+        end
+
+        its([:version]) { is_expected.to be_nil }
+        its([:candidate_version]) { is_expected.to eq '1.2.3' }
+      end # /context with a single package
+
+      context 'with an already installed package' do
+        let(:package_name) { 'bower' }
+
+        before do
+          stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
+          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH)
+{
+  "bower": {
+    "current": "1.3.12",
+    "wanted": "1.5.2",
+    "latest": "1.5.2",
+    "location": "/usr/local/lib/node_modules/bower"
+  }
+}
+EOH
+        end
+
+        its([:version]) { is_expected.to eq '1.3.12' }
+        its([:candidate_version]) { is_expected.to eq '1.5.2' }
+      end # /context with an already installed package
+
+      context 'with multiple packages' do
+        let(:package_name) { %w{express bower} }
+
+        before do
+          stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
+          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH)
+{
+  "bower": {
+    "current": "1.3.12",
+    "wanted": "1.5.2",
+    "latest": "1.5.2",
+    "location": "/usr/local/lib/node_modules/bower"
+  }
+}
+EOH
+          stub_javascript_shell_out(%w{/npm show --json --global express}, '{"version": "1.2.3"}')
+        end
+
+        its([:version]) { is_expected.to eq [nil, '1.3.12'] }
+        its([:candidate_version]) { is_expected.to eq %w{1.2.3 1.5.2} }
+      end # /context with multiple packages
+
+      context 'with empty outdated' do
+        let(:package_name) { 'bower' }
+
+        before do
+          stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
+          stub_javascript_shell_out(%w{/npm outdated --json --global}, '')
+        end
+
+        its([:version]) { is_expected.to eq '1.3.12' }
+        its([:candidate_version]) { is_expected.to eq '1.3.12' }
+      end # /context with empty outdated
+    end # /describe #check_package_versions
 
     describe '#npm_version' do
       let(:npm_version_output) { '' }
