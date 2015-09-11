@@ -21,11 +21,37 @@ describe PoiseJavascript::JavascriptCommandMixin do
     resource(:poise_test) do
       include described_class
     end
+    provider(:poise_test)
     subject { resource(:poise_test).new('test', nil) }
 
     it { is_expected.to respond_to :parent_javascript }
     it { is_expected.to respond_to :javascript }
     it { expect(subject.respond_to?(:javascript_from_parent, true)).to be true }
+
+    describe '#npm_binary' do
+      context 'with a parent' do
+        recipe do
+          javascript_runtime 'test' do
+            provider :system
+          end
+          poise_test 'test'
+        end
+
+        it { is_expected.to run_poise_test('test').with(npm_binary: '/usr/bin/npm') }
+      end # /context with a parent
+
+      context 'without a parent' do
+        recipe do
+          poise_test 'test' do
+            extend RSpec::Matchers
+            extend RSpec::Mocks::ExampleMethods
+            expect(self).to receive(:which).with('node').and_return('/something/node')
+          end
+        end
+
+        it { is_expected.to run_poise_test('test').with(npm_binary: '/something/npm') }
+      end # /context without a parent
+    end # /describe #npm_binary
   end # /describe PoiseJavascript::JavascriptCommandMixin::Resource
 
   describe PoiseJavascript::JavascriptCommandMixin::Provider do

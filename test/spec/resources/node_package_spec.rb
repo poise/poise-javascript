@@ -97,6 +97,11 @@ describe PoiseJavascript::Resources::NodePackage do
     let(:new_resource) { double('new_resource', path: nil, javascript: '/node', npm_binary: '/npm', user: nil, group: nil) }
     let(:test_provider) { described_class.new(new_resource, nil) }
 
+    def stub_javascript_shell_out(cmd, ret, **options)
+      default_options = {cwd: nil, user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}
+      allow(test_provider).to receive(:javascript_shell_out!).with(cmd, default_options.merge(options)).and_return(double(stdout: ret))
+    end
+
     describe '#load_current_resource' do
       let(:new_resource) do
         PoiseJavascript::Resources::NodePackage::Resource.new('mypkg', nil)
@@ -155,11 +160,6 @@ EOH
       end
       before do
         allow(test_provider).to receive(:npm_version).and_return(Gem::Version.new(npm_version))
-      end
-
-      def stub_javascript_shell_out(cmd, ret, **options)
-        default_options = {cwd: nil, user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}
-        allow(test_provider).to receive(:javascript_shell_out!).with(cmd, default_options.merge(options)).and_return(double(stdout: ret))
       end
 
       context 'with a single package' do
@@ -229,6 +229,61 @@ EOH
         its([:candidate_version]) { is_expected.to eq '1.3.12' }
       end # /context with empty outdated
     end # /describe #check_package_versions
+
+    describe '#install_package' do
+      let(:unsafe_perm) { true }
+      let(:source) { nil }
+      before do
+        allow(new_resource).to receive(:unsafe_perm).and_return(unsafe_perm)
+        allow(new_resource).to receive(:source).and_return(source)
+      end
+
+      context 'with a package' do
+        it do
+          stub_javascript_shell_out(%w{/npm install --json --global --unsafe-perm true express@1.2.3}, '')
+          test_provider.install_package('express', '1.2.3')
+        end
+      end # /context with a package
+
+      context 'with mutliple packages' do
+        it do
+          stub_javascript_shell_out(%w{/npm install --json --global --unsafe-perm true express@1.2.3 bower@1.3.12}, '')
+          test_provider.install_package(%w{express bower}, %w{1.2.3 1.3.12})
+        end
+      end # /context with mutliple packages
+
+      context 'with a source' do
+        let(:source) { 'git@example.com'}
+        it do
+          stub_javascript_shell_out(%w{/npm install --json --global --unsafe-perm true git@example.com}, '')
+          test_provider.install_package('express', '1.2.3')
+        end
+      end # /context with a source
+
+      context 'with unsafe_perm false' do
+      let(:unsafe_perm) { false }
+        it do
+          stub_javascript_shell_out(%w{/npm install --json --global --unsafe-perm false express@1.2.3}, '')
+          test_provider.install_package('express', '1.2.3')
+        end
+      end # /context with unsafe_perm false
+
+      context 'with unsafe_perm nil' do
+      let(:unsafe_perm) { nil }
+        it do
+          stub_javascript_shell_out(%w{/npm install --json --global express@1.2.3}, '')
+          test_provider.install_package('express', '1.2.3')
+        end
+      end # /context with unsafe_perm nil
+    end # /describe #install_package
+
+    describe '#remove_package' do
+      # Side effectsssss.
+      it do
+        stub_javascript_shell_out(%w{/npm uninstall --json --global express}, 'something that is not JSON')
+        test_provider.remove_package('express', '1.2.3')
+      end
+    end # /describe #remove_package
 
     describe '#npm_version' do
       let(:npm_version_output) { '' }
