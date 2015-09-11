@@ -108,9 +108,8 @@ module PoiseJavascript
         # @api private
         # @param resource [PoiseJavascript::Resources::NodePackage::Resource]
         #   Resource to load for.
-        # @param version [String, Array<String>] Current version(s) of package(s).
         # @return [void]
-        def check_package_versions(resource, version=new_resource.version)
+        def check_package_versions(resource)
           version_data = Hash.new {|hash, key| hash[key] = {current: nil, candidate: nil} }
           # Get the version for everything currently installed.
           list_args = npm_version?('>= 1.4.16') ? %w{--depth 0} : []
@@ -124,7 +123,13 @@ module PoiseJavascript
           if npm_version?('>= 1.3.16') && version_data.any? {|pkg_name, _pkg_vers| requested_packages.include?(pkg_name) }
             outdated = npm_shell_out!('outdated') || {}
             version_data.each do |pkg_name, pkg_vers|
-              pkg_vers[:candidate] = outdated[pkg_name]['wanted'] if outdated.include?(pkg_name)
+              pkg_vers[:candidate] = if outdated.include?(pkg_name)
+                outdated[pkg_name]['wanted']
+              else
+                # If it was already installed and not listed in outdated, it
+                # must have been up to date already.
+                pkg_vers[:current]
+              end
             end
           end
           # Check for candidates for anything else we didn't get from outdated.
