@@ -86,18 +86,6 @@ RSpec.shared_examples 'a javascript_runtime_test' do |javascript_name, version=n
   end
 end
 
-# describe 'default' do
-#   it_should_behave_like 'a javascript_runtime_test', 'default', 'v0.12'
-# end
-
-# describe 'nodejs 0.12' do
-#   it_should_behave_like 'a javascript_runtime_test', '0.12', 'v0.12'
-# end
-
-# describe 'iojs 3' do
-#   it_should_behave_like 'a javascript_runtime_test', '3', 'v3'
-# end
-
 describe 'nodejs' do
   it_should_behave_like 'a javascript_runtime_test', 'nodejs'
 end
