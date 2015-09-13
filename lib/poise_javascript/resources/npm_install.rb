@@ -79,7 +79,9 @@ module PoiseJavascript
             cmd << '--unsafe-perm'
             cmd << new_resource.unsafe_perm.to_s
           end
-          output = javascript_shell_out!(cmd, cwd: new_resource.path, user: new_resource.user, group: new_resource.group).stdout
+          # Add the directory for the node binary to $PATH for post-install stuffs.
+          new_path = [::File.dirname(new_resource.javascript), ENV['PATH'].to_s].join(::File::PATH_SEPARATOR)
+          output = javascript_shell_out!(cmd, cwd: new_resource.path, user: new_resource.user, group: new_resource.group, environment: {'PATH' => new_path}).stdout
           unless output.strip.empty?
             # Any output means it did something.
             new_resource.updated_by_last_action(true)
