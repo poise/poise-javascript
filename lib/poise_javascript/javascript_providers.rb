@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+require 'poise_javascript/javascript_providers/dummy'
 require 'poise_javascript/javascript_providers/iojs'
 require 'poise_javascript/javascript_providers/nodejs'
 require 'poise_javascript/javascript_providers/scl'
