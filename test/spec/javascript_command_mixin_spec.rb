@@ -32,12 +32,12 @@ describe PoiseJavascript::JavascriptCommandMixin do
       context 'with a parent' do
         recipe do
           javascript_runtime 'test' do
-            provider :system
+            provider :dummy
           end
           poise_test 'test'
         end
 
-        it { is_expected.to run_poise_test('test').with(npm_binary: '/usr/bin/npm') }
+        it { is_expected.to run_poise_test('test').with(npm_binary: '/npm') }
       end # /context with a parent
 
       context 'without a parent' do
