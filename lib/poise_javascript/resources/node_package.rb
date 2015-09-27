@@ -42,6 +42,10 @@ module PoiseJavascript
       class Resource < Chef::Resource::Package
         include PoiseJavascript::JavascriptCommandMixin
         provides(:node_package)
+        # Manually create matchers because #actions is unreliable.
+        %i{install upgrade remove}.each do |action|
+          Poise::Helpers::ChefspecMatchers.create_matcher(:node_package, action)
+        end
 
         # @!attribute group
         #   System group to install the package.
