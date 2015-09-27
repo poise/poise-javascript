@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+require 'chef/platform/provider_priority_map'
+
 require 'poise_javascript/javascript_providers/dummy'
 require 'poise_javascript/javascript_providers/iojs'
 require 'poise_javascript/javascript_providers/nodejs'
