@@ -21,7 +21,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   let(:expect_cmd) { [] }
   let(:expect_output) { '' }
   before do
-    allow_any_instance_of(described_class::Resource).to receive(:which).with('node').and_return('/node')
+    allow(PoiseLanguages::Utils).to receive(:which).with('node').and_return('/node')
     expect_any_instance_of(described_class::Provider).to receive(:javascript_shell_out!).with(*expect_cmd).and_return(double(stdout: expect_output))
   end
 

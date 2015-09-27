@@ -45,7 +45,7 @@ describe PoiseJavascript::JavascriptCommandMixin do
           poise_test 'test' do
             extend RSpec::Matchers
             extend RSpec::Mocks::ExampleMethods
-            expect(self).to receive(:which).with('node').and_return('/something/node')
+            expect(PoiseLanguages::Utils).to receive(:which).with('node').and_return('/something/node')
           end
         end
 
