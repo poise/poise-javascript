@@ -43,10 +43,8 @@ module PoiseJavascript
       def default_npm_binary
         if parent_javascript
           parent_javascript.npm_binary
-        elsif javascript
-          ::File.expand_path('../npm', javascript)
         else
-          PoiseLanguages::Utils.which('npm') || 'npm'
+          ::File.expand_path('../npm', javascript)
         end
       end
     end
