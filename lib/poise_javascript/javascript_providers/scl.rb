@@ -26,7 +26,7 @@ module PoiseJavascript
     class Scl < Base
       include PoiseLanguages::Scl::Mixin
       provides(:scl)
-      scl_package('0.10.35', 'nodejs010', {
+      scl_package('0.10.35', 'nodejs010', 'nodejs010-nodejs-devel', {
         ['redhat', 'centos'] => {
           '~> 7.0' => 'https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-7-x86_64/download/rhscl-nodejs010-epel-7-x86_64.noarch.rpm',
           '~> 6.0' => 'https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-6-x86_64/download/rhscl-nodejs010-epel-6-x86_64.noarch.rpm',
