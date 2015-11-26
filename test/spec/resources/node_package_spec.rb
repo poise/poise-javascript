@@ -85,7 +85,7 @@ describe PoiseJavascript::Resources::NodePackage do
     describe '#response_file_variables' do
       recipe do
         node_package 'express' do
-          response_file_variables({})
+          response_file_variables({a: 1})
         end
       end
 

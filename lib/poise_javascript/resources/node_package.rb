@@ -85,7 +85,7 @@ module PoiseJavascript
 
         # (see #response_file)
         def response_file_variables(arg=nil)
-          raise NoMethodError if arg
+          raise NoMethodError if arg && arg != {}
         end
       end
 
