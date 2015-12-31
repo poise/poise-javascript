@@ -36,7 +36,7 @@ describe PoiseJavascript::JavascriptProviders::IOJS do
 
   context 'with version iojs' do
     let(:javascript_version) { 'iojs' }
-    it_behaves_like 'iojs provider', 'iojs-3.2.0', 'https://iojs.org/dist/v3.2.0/iojs-v3.2.0-linux-x64.tar.gz'
+    it_behaves_like 'iojs provider', 'iojs-3.3.1', 'https://iojs.org/dist/v3.3.1/iojs-v3.3.1-linux-x64.tar.gz'
   end # /context with version iojs
 
   context 'with version iojs-2' do
@@ -51,7 +51,7 @@ describe PoiseJavascript::JavascriptProviders::IOJS do
 
   context 'with version 3' do
     let(:javascript_version) { '3' }
-    it_behaves_like 'iojs provider', 'iojs-3.2.0', 'https://iojs.org/dist/v3.2.0/iojs-v3.2.0-linux-x64.tar.gz'
+    it_behaves_like 'iojs provider', 'iojs-3.3.1', 'https://iojs.org/dist/v3.3.1/iojs-v3.3.1-linux-x64.tar.gz'
   end # /context with version 3
 
   context 'with 32-bit OS' do
@@ -61,7 +61,7 @@ describe PoiseJavascript::JavascriptProviders::IOJS do
         version 'iojs'
       end
     end
-    it_behaves_like 'iojs provider', 'iojs-3.2.0', 'https://iojs.org/dist/v3.2.0/iojs-v3.2.0-linux-x86.tar.gz'
+    it_behaves_like 'iojs provider', 'iojs-3.3.1', 'https://iojs.org/dist/v3.3.1/iojs-v3.3.1-linux-x86.tar.gz'
   end # /context with 32-bit OS
 
   context 'action :uninstall' do
@@ -72,6 +72,6 @@ describe PoiseJavascript::JavascriptProviders::IOJS do
       end
     end
 
-    it { is_expected.to uninstall_poise_languages_static('/opt/iojs-3.2.0') }
+    it { is_expected.to uninstall_poise_languages_static('/opt/iojs-3.3.1') }
   end # /context action :uninstall
 end
