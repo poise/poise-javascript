@@ -26,7 +26,7 @@ module PoiseJavascript
     class NodeJS < Base
       provides(:nodejs)
       include PoiseLanguages::Static(
-        versions: %w{4.1.1 4.0.0 0.12.7 0.11.16 0.10.40 0.9.12 0.8.28 0.7.12 0.6.21 0.5.10},
+        versions: %w{5.3.0 5.2.0 5.1.1 5.0.0 4.2.4 4.1.1 4.0.0 0.12.7 0.11.16 0.10.40 0.9.12 0.8.28 0.7.12 0.6.21 0.5.10},
         machines: %w{linux-i686 linux-x86_64 darwin-x86_64},
         url: 'https://nodejs.org/dist/v%{version}/node-v%{version}-%{kernel}-%{machine}.tar.gz',
       )
