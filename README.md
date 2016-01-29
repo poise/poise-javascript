@@ -24,7 +24,7 @@ This cookbook can install Node.js and io.js on Linux and OS X.
 
 ## Requirements
 
-Chef 12 or newer is required.
+Chef 12.1 or newer is required.
 
 ## Attributes
 

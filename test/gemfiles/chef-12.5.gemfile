@@ -14,15 +14,6 @@
 # limitations under the License.
 #
 
-source 'https://supermarket.chef.io/'
-extension 'halite'
+eval_gemfile File.expand_path('../../../Gemfile', __FILE__)
 
-# Force the rebuild every time for development.
-cookbook 'poise', gem: 'poise'
-cookbook 'poise-languages', gem: 'poise-languages'
-cookbook 'poise-javascript', gem: 'poise-javascript'
-
-group :test do
-  cookbook 'poise-javascript_test', path: 'test/cookbooks/poise-javascript_test'
-  cookbook 'apt'
-end
+gem 'chef', '~> 12.5.1'
