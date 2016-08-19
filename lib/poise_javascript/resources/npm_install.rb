@@ -49,6 +49,10 @@ module PoiseJavascript
         #   Enable production install mode.
         #   @return [Boolean]
         attribute(:production, equal_to: [true, false], default: true)
+        # @!attribute timeout
+        #   Command execution timeout.
+        #   @return [Integer]
+        attribute(:timeout, kind_of: Integer, default: 900)
         # @!attribute unsafe_perm
         #   Enable --unsafe-perm.
         #   @return [Boolean, nil]
@@ -81,7 +85,7 @@ module PoiseJavascript
           end
           # Add the directory for the node binary to $PATH for post-install stuffs.
           new_path = [::File.dirname(new_resource.javascript), ENV['PATH'].to_s].join(::File::PATH_SEPARATOR)
-          output = javascript_shell_out!(cmd, cwd: new_resource.path, user: new_resource.user, group: new_resource.group, environment: {'PATH' => new_path}).stdout
+          output = javascript_shell_out!(cmd, cwd: new_resource.path, user: new_resource.user, group: new_resource.group, environment: {'PATH' => new_path}, timeout: new_resource.timeout).stdout
           unless output.strip.empty?
             # Any output means it did something.
             new_resource.updated_by_last_action(true)
