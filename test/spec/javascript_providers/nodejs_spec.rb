@@ -36,12 +36,12 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
 
   context 'with version ""' do
     let(:javascript_version) { '' }
-    it_behaves_like 'nodejs provider', 'nodejs-4.4.0', 'https://nodejs.org/dist/v4.4.0/node-v4.4.0-linux-x64.tar.gz'
+    it_behaves_like 'nodejs provider', 'nodejs-4.5.0', 'https://nodejs.org/dist/v4.5.0/node-v4.5.0-linux-x64.tar.gz'
   end # /context with version ""
 
   context 'with version nodejs' do
     let(:javascript_version) { 'nodejs' }
-    it_behaves_like 'nodejs provider', 'nodejs-4.4.0', 'https://nodejs.org/dist/v4.4.0/node-v4.4.0-linux-x64.tar.gz'
+    it_behaves_like 'nodejs provider', 'nodejs-4.5.0', 'https://nodejs.org/dist/v4.5.0/node-v4.5.0-linux-x64.tar.gz'
   end # /context with version nodejs
 
   context 'with version nodejs-0.10' do
@@ -66,7 +66,7 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
         version ''
       end
     end
-    it_behaves_like 'nodejs provider', 'nodejs-4.4.0', 'https://nodejs.org/dist/v4.4.0/node-v4.4.0-linux-x86.tar.gz'
+    it_behaves_like 'nodejs provider', 'nodejs-4.5.0', 'https://nodejs.org/dist/v4.5.0/node-v4.5.0-linux-x86.tar.gz'
   end # /context with 32-bit OS
 
   context 'action :uninstall' do
@@ -77,6 +77,6 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
       end
     end
 
-    it { is_expected.to uninstall_poise_languages_static('/opt/nodejs-4.4.0') }
+    it { is_expected.to uninstall_poise_languages_static('/opt/nodejs-4.5.0') }
   end # /context action :uninstall
 end

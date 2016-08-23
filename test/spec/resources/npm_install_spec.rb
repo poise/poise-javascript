@@ -26,7 +26,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   end
 
   context 'with a path' do
-    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm true}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}] }
+    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm true}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}, timeout: 900}] }
     recipe do
       npm_install '/myapp'
     end
@@ -35,7 +35,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   end # /context with a path
 
   context 'with a user' do
-    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm true}, {cwd: '/myapp', user: 'myuser', group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}] }
+    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm true}, {cwd: '/myapp', user: 'myuser', group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}, timeout: 900}] }
     recipe do
       npm_install '/myapp' do
         user 'myuser'
@@ -46,7 +46,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   end # /context with a user
 
   context 'with production false' do
-    let(:expect_cmd) { [%w{/npm install --unsafe-perm true}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}] }
+    let(:expect_cmd) { [%w{/npm install --unsafe-perm true}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}, timeout: 900}] }
     recipe do
       npm_install '/myapp' do
         production false
@@ -57,7 +57,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   end # /context with production false
 
   context 'with unsafe_perm false' do
-    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm false}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}] }
+    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm false}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}, timeout: 900}] }
     recipe do
       npm_install '/myapp' do
         unsafe_perm false
@@ -68,7 +68,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   end # /context with unsafe_perm false
 
   context 'with unsafe_perm nil' do
-    let(:expect_cmd) { [%w{/npm install --production}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}] }
+    let(:expect_cmd) { [%w{/npm install --production}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}, timeout: 900}] }
     recipe do
       npm_install '/myapp' do
         @unsafe_perm = nil
@@ -79,7 +79,7 @@ describe PoiseJavascript::Resources::NpmInstall do
   end # /context with unsafe_perm nil
 
   context 'with output' do
-    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm true}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}] }
+    let(:expect_cmd) { [%w{/npm install --production --unsafe-perm true}, {cwd: '/myapp', user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}, timeout: 900}] }
     let(:expect_output) { <<-EOH }
 express@4.13.3 node_modules/express
 ├── escape-html@1.0.2
