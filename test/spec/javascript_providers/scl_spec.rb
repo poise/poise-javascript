@@ -35,7 +35,6 @@ describe PoiseJavascript::JavascriptProviders::Scl do
     it { is_expected.to install_poise_languages_scl(pkg) }
     it do
       expect_any_instance_of(described_class).to receive(:install_scl_package)
-      expect_any_instance_of(described_class).to receive(:install_v8_scl_package)
       run_chef
     end
     it do
@@ -46,8 +45,25 @@ describe PoiseJavascript::JavascriptProviders::Scl do
 
   context 'with version ""' do
     let(:javascript_version) { '' }
-    it_behaves_like 'scl provider', 'nodejs010'
+    it_behaves_like 'scl provider', 'rh-nodejs4'
   end # /context with version ""
+
+  context 'with version "0.10"' do
+    let(:javascript_version) { '0.10' }
+    it_behaves_like 'scl provider', 'nodejs010'
+  end # /context with version "0.10"
+
+  context 'with version "4"' do
+    let(:javascript_version) { '4' }
+    it_behaves_like 'scl provider', 'rh-nodejs4'
+  end # /context with version "4"
+
+
+  context 'with version "" on CentOS 6' do
+    let(:chefspec_options) { {platform: 'centos', version: '6.0'} }
+    let(:javascript_version) { '' }
+    it_behaves_like 'scl provider', 'nodejs010'
+  end # /context with version "" on CentOS 6
 
   context 'action :uninstall' do
     recipe do
@@ -60,7 +76,6 @@ describe PoiseJavascript::JavascriptProviders::Scl do
 
     it do
       expect_any_instance_of(described_class).to receive(:uninstall_scl_package)
-      expect_any_instance_of(described_class).to receive(:uninstall_v8_scl_package)
       run_chef
     end
     it { expect(javascript_runtime.provider_for_action(:uninstall)).to be_a described_class }
