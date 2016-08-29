@@ -27,7 +27,7 @@ end
 
 javascript_runtime_test 'iojs'
 
-if platform_family?('rhel')
+if platform_family?('rhel') && !node['platform_version'].start_with?('6')
   javascript_runtime_test 'scl' do
     version ''
     runtime_provider :scl
