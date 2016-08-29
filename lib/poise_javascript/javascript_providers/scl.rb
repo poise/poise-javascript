@@ -26,19 +26,8 @@ module PoiseJavascript
     class Scl < Base
       include PoiseLanguages::Scl::Mixin
       provides(:scl)
-      scl_package('0.10.35', 'nodejs010', 'nodejs010-nodejs-devel', {
-        ['redhat', 'centos'] => {
-          '~> 7.0' => 'https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-7-x86_64/download/rhscl-nodejs010-epel-7-x86_64.noarch.rpm',
-          '~> 6.0' => 'https://www.softwarecollections.org/en/scls/rhscl/nodejs010/epel-6-x86_64/download/rhscl-nodejs010-epel-6-x86_64.noarch.rpm',
-        },
-      })
-
-      V8_SCL_URLS = {
-        ['redhat', 'centos'] => {
-          '~> 7.0' => 'https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-7-x86_64/download/rhscl-v8314-epel-7-x86_64.noarch.rpm',
-          '~> 6.0' => 'https://www.softwarecollections.org/en/scls/rhscl/v8314/epel-6-x86_64/download/rhscl-v8314-epel-6-x86_64.noarch.rpm',
-        },
-      }
+      scl_package('4.4.2', 'rh-nodejs4', 'rh-nodejs4-nodejs-devel', '>= 7.0')
+      scl_package('0.10.35', 'nodejs010', 'nodejs010-nodejs-devel')
 
       def javascript_binary
         ::File.join(scl_folder, 'root', 'usr', 'bin', 'node')
@@ -51,26 +40,11 @@ module PoiseJavascript
       private
 
       def install_javascript
-        install_v8_scl_package
         install_scl_package
       end
 
       def uninstall_javascript
         uninstall_scl_package
-        uninstall_v8_scl_package
-      end
-
-      def install_v8_scl_package
-        poise_languages_scl 'v8314' do
-          parent new_resource
-          url node.value_for_platform(V8_SCL_URLS)
-        end
-      end
-
-      def uninstall_v8_scl_package
-        install_v8_scl_package.tap do |r|
-          r.action(:uninstall)
-        end
       end
 
     end
