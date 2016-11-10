@@ -95,7 +95,7 @@ describe PoiseJavascript::Resources::NodePackage do
 
   describe PoiseJavascript::Resources::NodePackage::Provider do
     let(:new_resource) { double('new_resource', path: nil, javascript: '/node', npm_binary: '/npm', user: nil, group: nil) }
-    let(:test_provider) { described_class.new(new_resource, nil) }
+    let(:test_provider) { described_class.new(new_resource, double(resource_collection: nil)) }
 
     def stub_javascript_shell_out(cmd, ret, **options)
       default_options = {cwd: nil, user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}
