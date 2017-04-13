@@ -79,4 +79,22 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
 
     it { is_expected.to uninstall_poise_languages_static('/opt/nodejs-4.5.0') }
   end # /context action :uninstall
+
+  describe 'release checker' do
+    let(:class_versions) { described_class.static_versions }
+    let(:node_versions) { Chef::JSONCompat.parse(Chef::HTTP::Simple.new('https://nodejs.org/').get('/dist/index.json')) }
+    let(:current_lts) { node_versions.find {|ver| ver['lts'] }['version'][/v(.*)/, 1] }
+    let(:desired_versions) do
+      versions = node_versions.map {|ver| ver['version'][/v(.*)/, 1] }
+      clean_versions = versions.each_with_object([]) do |ver, acc|
+        minor = ver[/^(.*)\.\d+$/, 1]
+        unless acc.any? {|v| v.start_with?(minor) }
+          acc << ver
+        end
+      end
+      clean_versions.delete(current_lts)
+      [current_lts] + clean_versions
+    end
+    it { expect(desired_versions.join("\n")).to eq(class_versions.join("\n")), "NodeJS versions out of date:\n%w{#{desired_versions.join(' ')}}" }
+  end # /describe release checker
 end
