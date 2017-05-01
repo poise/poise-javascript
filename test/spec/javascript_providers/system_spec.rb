@@ -47,7 +47,7 @@ describe PoiseJavascript::JavascriptProviders::System do
   end # /context on Ubuntu
 
   context 'on Gentoo' do
-    let(:chefspec_options) { {platform: 'gentoo', version: '2.1' } }
+    let(:chefspec_options) { {platform: 'gentoo', version: '2.2' } }
     it_behaves_like 'system provider', %w{nodejs nodejs-legacy node}, 'nodejs', 'node'
   end # /context on Gentoo
 
