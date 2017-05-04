@@ -36,12 +36,12 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
 
   context 'with version ""' do
     let(:javascript_version) { '' }
-    it_behaves_like 'nodejs provider', 'nodejs-6.10.2', 'https://nodejs.org/dist/v6.10.2/node-v6.10.2-linux-x64.tar.gz'
+    it_behaves_like 'nodejs provider', 'nodejs-6.10.3', 'https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.gz'
   end # /context with version ""
 
   context 'with version nodejs' do
     let(:javascript_version) { 'nodejs' }
-    it_behaves_like 'nodejs provider', 'nodejs-6.10.2', 'https://nodejs.org/dist/v6.10.2/node-v6.10.2-linux-x64.tar.gz'
+    it_behaves_like 'nodejs provider', 'nodejs-6.10.3', 'https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x64.tar.gz'
   end # /context with version nodejs
 
   context 'with version nodejs-0.10' do
@@ -66,7 +66,7 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
         version ''
       end
     end
-    it_behaves_like 'nodejs provider', 'nodejs-6.10.2', 'https://nodejs.org/dist/v6.10.2/node-v6.10.2-linux-x86.tar.gz'
+    it_behaves_like 'nodejs provider', 'nodejs-6.10.3', 'https://nodejs.org/dist/v6.10.3/node-v6.10.3-linux-x86.tar.gz'
   end # /context with 32-bit OS
 
   context 'action :uninstall' do
@@ -77,7 +77,7 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
       end
     end
 
-    it { is_expected.to uninstall_poise_languages_static('/opt/nodejs-6.10.2') }
+    it { is_expected.to uninstall_poise_languages_static('/opt/nodejs-6.10.3') }
   end # /context action :uninstall
 
   describe 'release checker' do
@@ -87,7 +87,7 @@ describe PoiseJavascript::JavascriptProviders::NodeJS do
     let(:desired_versions) do
       versions = node_versions.map {|ver| ver['version'][/v(.*)/, 1] }
       clean_versions = versions.each_with_object([]) do |ver, acc|
-        minor = ver[/^(.*)\.\d+$/, 1]
+        minor = ver[/^(.*?\.)\d+$/, 1]
         unless acc.any? {|v| v.start_with?(minor) }
           acc << ver
         end
