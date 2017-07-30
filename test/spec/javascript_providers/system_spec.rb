@@ -42,17 +42,17 @@ describe PoiseJavascript::JavascriptProviders::System do
   end
 
   context 'on Ubuntu' do
-    let(:chefspec_options) { {platform: 'ubuntu', version: '14.04'} }
+    let(:chefspec_options) { {platform: 'ubuntu', version: '16.04'} }
     it_behaves_like 'system provider', %w{nodejs nodejs-legacy node}, 'nodejs', 'nodejs'
   end # /context on Ubuntu
 
   context 'on Gentoo' do
-    let(:chefspec_options) { {platform: 'gentoo', version: '2.2' } }
+    let(:chefspec_options) { {platform: 'gentoo', version: '4.9.6-gentoo-r1' } }
     it_behaves_like 'system provider', %w{nodejs nodejs-legacy node}, 'nodejs', 'node'
   end # /context on Gentoo
 
   context 'on CentOS' do
-    let(:chefspec_options) { {platform: 'centos', version: '7.0'} }
+    let(:chefspec_options) { {platform: 'centos', version: '7.3.1611'} }
     it { expect { subject }.to raise_error PoiseLanguages::Error }
   end # /context on CentOS
 

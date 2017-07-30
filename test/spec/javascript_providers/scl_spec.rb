@@ -18,7 +18,7 @@ require 'spec_helper'
 
 describe PoiseJavascript::JavascriptProviders::Scl do
   let(:javascript_version) { '' }
-  let(:chefspec_options) { {platform: 'centos', version: '7.0'} }
+  let(:chefspec_options) { {platform: 'centos', version: '7.3.1611'} }
   let(:default_attributes) { {poise_javascript_version: javascript_version} }
   let(:javascript_runtime) { chef_run.javascript_runtime('test') }
   step_into(:javascript_runtime)
@@ -60,7 +60,7 @@ describe PoiseJavascript::JavascriptProviders::Scl do
 
 
   context 'with version "" on CentOS 6' do
-    let(:chefspec_options) { {platform: 'centos', version: '6.0'} }
+    let(:chefspec_options) { {platform: 'centos', version: '6.9'} }
     let(:javascript_version) { '' }
     it_behaves_like 'scl provider', 'nodejs010'
   end # /context with version "" on CentOS 6
