@@ -125,7 +125,7 @@ module PoiseJavascript
           # here so you get slow behavior, sorry.
           requested_packages = Set.new(Array(resource.package_name))
           if npm_version?('>= 1.3.16') && version_data.any? {|pkg_name, _pkg_vers| requested_packages.include?(pkg_name) }
-            outdated = npm_shell_out!('outdated') || {}
+            outdated = npm_shell_out('outdated') || {}
             version_data.each do |pkg_name, pkg_vers|
               pkg_vers[:candidate] = if outdated.include?(pkg_name)
                 outdated[pkg_name]['wanted']
@@ -195,31 +195,63 @@ module PoiseJavascript
 
         private
 
-        # Run an npm command.
+        # Run an npm command and raise errors for non-zero exit codes.
         #
         # @param subcmd [String] Subcommand to run.
         # @param args [Array<String>] Command arguments.
         # @param parse_json [Boolean] Parse the JSON on stdout.
         # @return [Hash]
         def npm_shell_out!(subcmd, args=[], parse_json: true)
+          out = javascript_shell_out!(cmd(subcmd, args), cwd: new_resource.path, group: new_resource.group, user: new_resource.user, environment: {'PATH' => new_path})
+          return parse_json(out) if parse_json
+          out
+        end
+
+        # Run an npm command and do not raise errors (for npm outdated, which
+        # always returns exit code 1 if there are outdated packages).
+        #
+        # @param subcmd [String] Subcommand to run.
+        # @param args [Array<String>] Command arguments.
+        # @param parse_json [Boolean] Parse the JSON on stdout.
+        # @return [Hash]
+        def npm_shell_out(subcmd, args=[], parse_json: true)
+          out = javascript_shell_out(cmd(subcmd, args), cwd: new_resource.path, group: new_resource.group, user: new_resource.user, environment: {'PATH' => new_path})
+          return parse_json(out) if parse_json
+          out
+        end
+
+        # Build a proper npm command for given arguments.
+        #
+        # @param subcmd [String] Subcommand to run.
+        # @param args [Array<String>] Command arguments.
+        # @return [String]
+        def cmd(subcmd, args)
           cmd = [new_resource.npm_binary, subcmd, '--json']
           # If path is nil, we are in global mode.
           cmd << '--global' unless new_resource.path
           # Add the rest.
           cmd.concat(args)
+          cmd
+        end
+
+        # Return the proper path for running npm commands.
+        #
+        # @return [String]
+        def new_path
           # If we are in global mode, cwd will be nil so probably just fine. Add
           # the directory for the node binary to $PATH for post-install stuffs.
           new_path = [::File.dirname(new_resource.javascript), ENV['PATH'].to_s].join(::File::PATH_SEPARATOR)
-          out = javascript_shell_out!(cmd, cwd: new_resource.path, group: new_resource.group, user: new_resource.user, environment: {'PATH' => new_path})
-          if parse_json
-            # Parse the JSON.
-            if out.stdout.strip.empty?
-              {}
-            else
-              Chef::JSONCompat.parse(out.stdout)
-            end
+        end
+
+        # Parse JSON for an npm javascript_shell_out command.
+        #
+        # @param out [Hash] The shell_out output to be parsed.
+        # @return [String]
+        def parse_json(out)
+          if out.stdout.strip.empty?
+            {}
           else
-            out
+            Chef::JSONCompat.parse(out.stdout)
           end
         end
 

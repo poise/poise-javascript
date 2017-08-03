@@ -97,9 +97,16 @@ describe PoiseJavascript::Resources::NodePackage do
     let(:new_resource) { double('new_resource', path: nil, javascript: '/node', npm_binary: '/npm', user: nil, group: nil) }
     let(:test_provider) { described_class.new(new_resource, double(resource_collection: nil)) }
 
-    def stub_javascript_shell_out(cmd, ret, **options)
+    def default_options
       default_options = {cwd: nil, user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}
+    end
+
+    def stub_javascript_shell_out(cmd, ret, **options)
       allow(test_provider).to receive(:javascript_shell_out!).with(cmd, default_options.merge(options)).and_return(double(stdout: ret))
+    end
+
+    def stub_outdated(ret, **options)
+      allow(test_provider).to receive(:javascript_shell_out).with(%w{/npm outdated --json --global}, default_options.merge(options)).and_return(double(stdout: ret))
     end
 
     describe '#load_current_resource' do
@@ -179,7 +186,7 @@ EOH
 
         before do
           stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
-          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH)
+          stub_outdated(<<-EOH)
 {
   "bower": {
     "current": "1.3.12",
@@ -200,7 +207,7 @@ EOH
 
         before do
           stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
-          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH)
+          stub_outdated(<<-EOH)
 {
   "bower": {
     "current": "1.3.12",
@@ -222,7 +229,7 @@ EOH
 
         before do
           stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
-          stub_javascript_shell_out(%w{/npm outdated --json --global}, '')
+          stub_outdated('')
         end
 
         its([:version]) { is_expected.to eq '1.3.12' }
