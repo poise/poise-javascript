@@ -21,11 +21,9 @@ package 'lsb-release' if platform?('debian') && node['platform_version'].start_w
 
 javascript_runtime_test 'nodejs'
 
-javascript_runtime_test 'nodejs-0.10' do
-  test_yo false
-end
+javascript_runtime_test 'nodejs-9'
 
-javascript_runtime_test 'iojs'
+javascript_runtime_test 'nodejs-4'
 
 if platform_family?('rhel') && !node['platform_version'].start_with?('6')
   javascript_runtime_test 'scl' do

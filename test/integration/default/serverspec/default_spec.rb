@@ -86,16 +86,16 @@ RSpec.shared_examples 'a javascript_runtime_test' do |javascript_name, version=n
   end
 end
 
-describe 'nodejs' do
+describe 'nodejs LTS' do
   it_should_behave_like 'a javascript_runtime_test', 'nodejs'
 end
 
-describe 'node 0.10' do
-  it_should_behave_like 'a javascript_runtime_test', 'nodejs-0.10', 'v0.10'
+describe 'nodejs 9' do
+  it_should_behave_like 'a javascript_runtime_test', 'nodejs-9', 'v9'
 end
 
-describe 'iojs' do
-  it_should_behave_like 'a javascript_runtime_test', 'iojs'
+describe 'nodejs 4' do
+  it_should_behave_like 'a javascript_runtime_test', 'nodejs-4', 'v4'
 end
 
 describe 'system provider', unless: File.exist?('/no_system') do
