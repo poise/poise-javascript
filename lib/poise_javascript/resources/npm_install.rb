@@ -86,8 +86,8 @@ module PoiseJavascript
           # Add the directory for the node binary to $PATH for post-install stuffs.
           new_path = [::File.dirname(new_resource.javascript), ENV['PATH'].to_s].join(::File::PATH_SEPARATOR)
           output = javascript_shell_out!(cmd, cwd: new_resource.path, user: new_resource.user, group: new_resource.group, environment: {'PATH' => new_path}, timeout: new_resource.timeout).stdout
-          unless output.strip.empty?
-            # Any output means it did something.
+          unless output.strip.empty? || output.include?('up to date')
+            # Any output means it did something for old NPM, "up to date" for newer.
             new_resource.updated_by_last_action(true)
           end
         end
