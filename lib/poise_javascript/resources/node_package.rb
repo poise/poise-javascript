@@ -125,7 +125,7 @@ module PoiseJavascript
           # here so you get slow behavior, sorry.
           requested_packages = Set.new(Array(resource.package_name))
           if npm_version?('>= 1.3.16') && version_data.any? {|pkg_name, _pkg_vers| requested_packages.include?(pkg_name) }
-            outdated = npm_shell_out!('outdated') || {}
+            outdated = npm_shell_out!('outdated', returns: [0, 1]) || {}
             version_data.each do |pkg_name, pkg_vers|
               pkg_vers[:candidate] = if outdated.include?(pkg_name)
                 outdated[pkg_name]['wanted']
@@ -201,7 +201,7 @@ module PoiseJavascript
         # @param args [Array<String>] Command arguments.
         # @param parse_json [Boolean] Parse the JSON on stdout.
         # @return [Hash]
-        def npm_shell_out!(subcmd, args=[], parse_json: true)
+        def npm_shell_out!(subcmd, args=[], parse_json: true, **kwargs)
           cmd = [new_resource.npm_binary, subcmd, '--json']
           # If path is nil, we are in global mode.
           cmd << '--global' unless new_resource.path
@@ -210,7 +210,7 @@ module PoiseJavascript
           # If we are in global mode, cwd will be nil so probably just fine. Add
           # the directory for the node binary to $PATH for post-install stuffs.
           new_path = [::File.dirname(new_resource.javascript), ENV['PATH'].to_s].join(::File::PATH_SEPARATOR)
-          out = javascript_shell_out!(cmd, cwd: new_resource.path, group: new_resource.group, user: new_resource.user, environment: {'PATH' => new_path})
+          out = javascript_shell_out!(cmd, cwd: new_resource.path, group: new_resource.group, user: new_resource.user, environment: {'PATH' => new_path}, **kwargs)
           if parse_json
             # Parse the JSON.
             if out.stdout.strip.empty?
