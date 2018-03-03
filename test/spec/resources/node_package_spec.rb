@@ -179,7 +179,7 @@ EOH
 
         before do
           stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
-          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH)
+          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH, returns: [0, 1])
 {
   "bower": {
     "current": "1.3.12",
@@ -200,7 +200,7 @@ EOH
 
         before do
           stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
-          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH)
+          stub_javascript_shell_out(%w{/npm outdated --json --global}, <<-EOH, returns: [0, 1])
 {
   "bower": {
     "current": "1.3.12",
@@ -222,7 +222,7 @@ EOH
 
         before do
           stub_javascript_shell_out(%w{/npm list --json --global --depth 0}, npm_list_out)
-          stub_javascript_shell_out(%w{/npm outdated --json --global}, '')
+          stub_javascript_shell_out(%w{/npm outdated --json --global}, '', returns: [0, 1])
         end
 
         its([:version]) { is_expected.to eq '1.3.12' }
