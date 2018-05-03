@@ -32,6 +32,8 @@ describe PoiseJavascript::Resources::JavascriptExecute do
     let(:parent_javascript) { nil }
     let(:new_resource) do
       double('new_resource',
+        name: 'test',
+        cookbook_name: 'test',
         command: command,
         environment: environment,
         javascript: javascript,

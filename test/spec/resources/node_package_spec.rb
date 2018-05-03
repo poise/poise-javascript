@@ -94,8 +94,8 @@ describe PoiseJavascript::Resources::NodePackage do
   end # /describe PoiseJavascript::Resources::NodePackage::Resource
 
   describe PoiseJavascript::Resources::NodePackage::Provider do
-    let(:new_resource) { double('new_resource', path: nil, javascript: '/node', npm_binary: '/npm', user: nil, group: nil) }
-    let(:test_provider) { described_class.new(new_resource, double(resource_collection: nil)) }
+    let(:new_resource) { double('new_resource', name: 'test', cookbook_name: 'test', path: nil, javascript: '/node', npm_binary: '/npm', user: nil, group: nil) }
+    let(:test_provider) { described_class.new(new_resource, chef_run.run_context) }
 
     def stub_javascript_shell_out(cmd, ret, **options)
       default_options = {cwd: nil, user: nil, group: nil, environment: {'PATH' => "/:#{ENV['PATH']}"}}
